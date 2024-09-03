@@ -1,12 +1,4 @@
-export interface LanguageString {
-  th: string;
-  en: string;
-}
-
-export interface Category {
-  id: string;
-  name: LanguageString;
-}
+import { Category, LanguageString } from "./CategoryTypes";
 
 export interface Book {
   id: string;

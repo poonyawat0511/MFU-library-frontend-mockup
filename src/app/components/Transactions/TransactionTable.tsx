@@ -1,4 +1,4 @@
-import { Transaction } from "./TransactionTypes";
+import { Transaction } from "../Types/TransactionTypes";
 
 interface TransactionProps {
   transactions: Transaction[]; // Add this prop to receive a list of transactions

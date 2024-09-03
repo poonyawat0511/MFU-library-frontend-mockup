@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { login } from "./action";
 
@@ -10,7 +9,7 @@ interface LoginResult {
 
 export default function LoginPage() {
   const [state, setState] = useState<{ message: string }>({ message: "" });
-  const router = useRouter();
+
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,7 +20,7 @@ export default function LoginPage() {
 
       if (result.Message === "Login successful") {
         // Redirect to the dashboard or any other protected page
-        router.push("/");
+        window.location.href = "/";
       } else {
         setState({ message: result.Message });
       }

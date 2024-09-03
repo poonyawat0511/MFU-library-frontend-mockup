@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Book, Category, LanguageString } from "./BookTypes";
+import { Book } from "../Types/BookTypes";
+import { Category, LanguageString } from "../Types/CategoryTypes";
 
 interface BookFormProps {
   book?: Book | null;
@@ -83,14 +84,10 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
     formData.append("description[th]", description.th);
     formData.append("description[en]", description.en);
 
-    console.log("Selected category ID:", category);
-    console.log("Available categories:", categories);
-
-    const selectedCategory = categories.find((cat) => cat.id === category);
-    if (selectedCategory) {
+    if (category) {
       formData.append("category", category);
     } else {
-      alert("Invalid category selected");
+      alert("Please select a category");
       return;
     }
 
@@ -100,12 +97,17 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
       alert("Invalid status value");
       return;
     }
-
     formData.append("quantity", quantity.toString());
-
     if (bookImage) {
       formData.append("bookImage", bookImage);
+    } else if (book?.bookImage) {
+      formData.append("bookImage", book.bookImage);
     }
+
+    console.log(
+      "Submitting form data:",
+      Object.fromEntries(formData.entries())
+    );
 
     onSubmit(formData);
   };

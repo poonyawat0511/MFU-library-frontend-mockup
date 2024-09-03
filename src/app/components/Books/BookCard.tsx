@@ -1,4 +1,4 @@
-import { Book } from "./BookTypes";
+import { Book } from "../Types/BookTypes";
 
 interface BookCardProps {
   book: Book;
@@ -8,7 +8,7 @@ interface BookCardProps {
 
 export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
   return (
-    <div className="max-w-xs w-full h-85 rounded overflow-hidden shadow-lg m-2">
+    <div className="max-w-sm w-full h-85 rounded overflow-hidden shadow-lg m-2">
       <img
         className="w-full h-40 object-cover"
         src={book.bookImage}

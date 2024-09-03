@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import TransactionTable from "../components/Transactions/TransactionTable";
-import { Transaction } from "../components/Transactions/TransactionTypes";
+import { Transaction } from "../components/Types/TransactionTypes";
 
 const apiUrl = "http://localhost:8082/api/transactions";
 

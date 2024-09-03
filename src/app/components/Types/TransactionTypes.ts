@@ -1,5 +1,5 @@
-import { Book } from "../Books/BookTypes";
-import { User } from "../Users/UserTypes";
+import { Book } from "../Types/BookTypes";
+import { User } from "./UserTypes";
 
 export interface Transaction {
   id: string;
