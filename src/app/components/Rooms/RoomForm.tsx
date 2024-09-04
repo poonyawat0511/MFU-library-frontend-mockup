@@ -1,87 +1,122 @@
-// src/components/Rooms/RoomForm.tsx
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Room } from "../Types/RoomTypes";
+import { RoomType } from "../Types/RoomtypeTypes";
 
 interface RoomFormProps {
-  room: Room | null;
-  onSubmit: (formData: FormData) => void;
+  room?: Room | null;
+  onSubmit: (data: Room) => void;
   onClose: () => void;
 }
 
-const RoomForm: React.FC<RoomFormProps> = ({ room, onSubmit, onClose }) => {
-  const [roomNumber, setRoomNumber] = useState<number | "">(room?.room || "");
-  const [floor, setFloor] = useState<number | "">(room?.floor || "");
-  const [status, setStatus] = useState<string>(room?.status || "");
-  const [type, setType] = useState<string>(room?.type.id || "");
+export default function RoomForm({ room, onSubmit, onClose }: RoomFormProps) {
+  const [roomNumber, setRoomNumber] = useState<number>(0);
+  const [floor, setFloor] = useState<number>(0);
+  const [status, setStatus] = useState<string>("free");
+  const [type, setType] = useState<string>(""); // Changed to string to store MongoDB ID
+  const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
 
   useEffect(() => {
     if (room) {
       setRoomNumber(room.room);
       setFloor(room.floor);
       setStatus(room.status);
-      setType(room.type.id);
+      setType(room.type.id); // Use ID as string
     }
   }, [room]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("id", room?.id || "");
-    formData.append("room", String(roomNumber));
-    formData.append("floor", String(floor));
-    formData.append("status", status);
-    formData.append("type", type);
-    onSubmit(formData);
+  useEffect(() => {
+    const fetchRoomTypes = async () => {
+      try {
+        const response = await fetch("http://localhost:8082/api/room-types");
+        const data = await response.json();
+        setRoomTypes(data.data);
+      } catch (error) {
+        console.error("Error fetching room types:", error);
+      }
+    };
+
+    fetchRoomTypes();
+  }, []);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const data: Room = {
+      id: room?.id || "",
+      room: roomNumber,
+      floor,
+      status,
+      type: type,
+    };
+
+    onSubmit(data);
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-600 bg-opacity-50">
-      <div className="bg-white p-4 rounded shadow-lg w-1/3">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">
           {room ? "Edit Room" : "Create Room"}
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
               Room Number
             </label>
             <input
               type="number"
               value={roomNumber}
               onChange={(e) => setRoomNumber(Number(e.target.value))}
-              className="border px-3 py-2 w-full rounded"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Floor</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Floor
+            </label>
             <input
               type="number"
               value={floor}
               onChange={(e) => setFloor(Number(e.target.value))}
-              className="border px-3 py-2 w-full rounded"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Status</label>
-            <input
-              type="text"
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Status
+            </label>
+            <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="border px-3 py-2 w-full rounded"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
-            />
+            >
+              <option value="free">Free</option>
+              <option value="reserved">Reserved</option>
+              <option value="in use">In Use</option>
+            </select>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Type ID</label>
-            <input
-              type="text"
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Room Type
+            </label>
+            <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="border px-3 py-2 w-full rounded"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
-            />
+            >
+              <option value="" disabled>
+                Select a room type
+              </option>
+              {roomTypes.map((roomType) => (
+                <option key={roomType.id} value={roomType.id}>
+                  {roomType.name.th} / {roomType.name.en}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex justify-end">
             <button
@@ -95,13 +130,11 @@ const RoomForm: React.FC<RoomFormProps> = ({ room, onSubmit, onClose }) => {
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded"
             >
-              Submit
+              {room ? "Update" : "Create"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-};
-
-export default RoomForm;
+}

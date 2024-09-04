@@ -7,3 +7,5 @@ export interface Room {
   status: string;
   type: RoomType;
 }
+
+

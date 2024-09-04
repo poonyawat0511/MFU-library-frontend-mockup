@@ -1,104 +1,110 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import RoomCard from "../components/Rooms/RoomCard";
+import { useEffect, useState } from "react";
 import RoomForm from "../components/Rooms/RoomForm";
 import { Room } from "../components/Types/RoomTypes";
 
-const RoomPage: React.FC = () => {
+export default function RoomPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    async function fetchRooms() {
-      try {
-        const response = await fetch("http://localhost:8082/api/rooms");
-        const result = await response.json();
-        setRooms(result.data);
-      } catch (error) {
-        console.error("Failed to fetch rooms:", error);
-      }
-    }
     fetchRooms();
   }, []);
 
+  const fetchRooms = async () => {
+    try {
+      const response = await fetch("http://localhost:8082/api/rooms");
+      const data = await response.json();
+      setRooms(data.data);
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+    }
+  };
+
+  const handleCreate = () => {
+    setSelectedRoom(null);
+    setIsFormOpen(true);
+  };
+
   const handleEdit = (room: Room) => {
-    setEditingRoom(room);
+    setSelectedRoom(room);
     setIsFormOpen(true);
   };
 
   const handleDelete = async (roomId: string) => {
-    if (confirm("Are you sure you want to delete this room?")) {
-      try {
-        await fetch(`http://localhost:8082/api/rooms/${roomId}`, {
-          method: "DELETE",
-        });
-        setRooms(rooms.filter((room) => room.id !== roomId));
-      } catch (error) {
-        console.error("Failed to delete room:", error);
-      }
+    try {
+      await fetch(`http://localhost:8082/api/rooms/${roomId}`, {
+        method: "DELETE",
+      });
+      fetchRooms();
+    } catch (error) {
+      console.error("Error deleting room:", error);
     }
   };
 
-  const handleFormSubmit = async (formData: FormData) => {
+  const handleSubmit = async (data: Room) => {
     try {
-      const id = formData.get("id") as string;
-      const method = id ? "PATCH" : "POST";
-      const url = id
-        ? `http://localhost:8082/api/rooms/${id}`
+      const method = data.id ? "PATCH" : "POST";
+      const endpoint = data.id
+        ? `http://localhost:8082/api/rooms/${data.id}`
         : "http://localhost:8082/api/rooms";
 
-      const response = await fetch(url, {
+      await fetch(endpoint, {
         method,
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (id) {
-          setRooms(
-            rooms.map((r) => (r.id === result.data.id ? result.data : r))
-          );
-        } else {
-          setRooms([...rooms, result.data]);
-        }
-        setIsFormOpen(false);
-      }
+      fetchRooms(); // Refresh the room list after submission
+      setIsFormOpen(false);
     } catch (error) {
-      console.error("Failed to submit room:", error);
+      console.error("Error submitting room data:", error);
     }
   };
 
   return (
     <div>
+      <h1 className="text-2xl font-bold mb-4">Room Management</h1>
       <button
-        onClick={() => {
-          setEditingRoom(null);
-          setIsFormOpen(true);
-        }}
+        onClick={handleCreate}
         className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
       >
         Create New Room
       </button>
-      <div className="flex flex-wrap justify-start">
+      <ul>
         {rooms.map((room) => (
-          <RoomCard
-            key={room.id}
-            room={room}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <li key={room.id} className="mb-2 flex justify-between items-center">
+            <div>
+              Room {room.room}, Floor {room.floor} - {room.status} (
+              {room.type.name.en})
+            </div>
+            <div>
+              <button
+                onClick={() => handleEdit(room)}
+                className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(room.id)}
+                className="bg-red-500 text-white px-4 py-2 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
       {isFormOpen && (
         <RoomForm
-          room={editingRoom}
-          onSubmit={handleFormSubmit}
+          room={selectedRoom}
+          onSubmit={handleSubmit}
           onClose={() => setIsFormOpen(false)}
         />
       )}
     </div>
   );
-};
-
-export default RoomPage;
+}
