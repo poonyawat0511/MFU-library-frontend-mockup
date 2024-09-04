@@ -97,7 +97,9 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
       alert("Invalid status value");
       return;
     }
+
     formData.append("quantity", quantity.toString());
+
     if (bookImage) {
       formData.append("bookImage", bookImage);
     } else if (book?.bookImage) {
@@ -187,23 +189,24 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
 
         <input
           type="number"
-          placeholder="Quantity"
+          min="1"
           value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-          className="border p-2 mb-2 w-full"
+          onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+          className="border p-2 mb-4 w-full"
         />
-        <div className="flex justify-end">
-          <button
-            onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Cancel
-          </button>
+
+        <div className="flex justify-between">
           <button
             onClick={handleSubmit}
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Save
+            Submit
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Cancel
           </button>
         </div>
       </div>
