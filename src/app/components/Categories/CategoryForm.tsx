@@ -3,7 +3,7 @@ import { Category } from "../Types/CategoryTypes";
 
 interface CategoryFormProps {
   category?: Category | null;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Category) => void;
   onClose: () => void;
 }
 
@@ -25,39 +25,15 @@ export default function CategoryForm({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nameObject = {
-      th: nameTh,
-      en: nameEn,
+    const data: Category = {
+      id: category?.id || "",
+      name: {
+        th: nameTh,
+        en: nameEn,
+      },
     };
 
-    const data = {
-      name: nameObject,
-      id: category?.id,
-    };
-
-    // Send the data as JSON if your backend expects JSON
-    try {
-      const response = await fetch(
-        "http://localhost:8082/api/book-categories",
-        {
-          method: category ? "PATCH" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        onSubmit(result.data);
-        onClose();
-      } else {
-        console.error("Failed to submit category");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    onSubmit(data);
   };
 
   return (

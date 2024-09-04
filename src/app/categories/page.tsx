@@ -20,6 +20,7 @@ async function fetchCategories(): Promise<Category[]> {
     return [];
   }
 }
+
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -38,15 +39,20 @@ export default function CategoriesPage() {
     setIsFormOpen(true);
   };
 
-  const handleEdit = (book: Category) => {
-    setEditingCategory(book);
+  const handleEdit = (category: Category) => {
+    setEditingCategory(category);
     setIsFormOpen(true);
   };
 
   const handleDelete = async (categoryId: string) => {
     if (confirm("Are you sure you want to delete this Category?")) {
       try {
-        await fetch(`${apiUrl}/${categoryId}`, { method: "DELETE" });
+        const response = await fetch(`${apiUrl}/${categoryId}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to delete category");
+        }
         setCategories(
           categories.filter((category) => category.id !== categoryId)
         );
@@ -56,19 +62,12 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: Category) => {
     try {
-      // Check if data.id is set
-      const isUpdate = !!data.id; // Convert data.id to boolean to check if it's present
+      const isUpdate = !!data.id;
       const method = isUpdate ? "PATCH" : "POST";
       const url = isUpdate ? `${apiUrl}/${data.id}` : apiUrl;
 
-      console.log(`Sending ${method} request to ${url}`); // Debug log to check URL
-
-      // Ensure correct data object
-      console.log("Form data being submitted:", data);
-
-      // Perform the fetch request
       const response = await fetch(url, {
         method,
         headers: {
@@ -78,24 +77,16 @@ export default function CategoriesPage() {
       });
 
       if (response.ok) {
-        // Parse the response
         const result = await response.json();
-
-        // Update the category list based on whether it was a create or update operation
         if (isUpdate) {
-          // Update existing category
           setCategories(
             categories.map((c) => (c.id === result.data.id ? result.data : c))
           );
         } else {
-          // Add new category
           setCategories([...categories, result.data]);
         }
-
-        // Close the form
         setIsFormOpen(false);
       } else {
-        // Handle errors
         const errorText = await response.text();
         console.error(`Failed to submit category: ${errorText}`);
       }
