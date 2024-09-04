@@ -24,7 +24,7 @@ export default function SideNavbar() {
   };
 
   return (
-    <aside className="w-[220px] max-w-xs h-[calc(100vh-4rem)] fixed left-0 top-16 z-40 bg-white-800 text-gray border-r border-white-700">
+    <aside className="w-[220px] max-w-xs h-[calc(100vh-4rem)] fixed left-0 top-16 z-40 bg-white text-gray border-r border-gray-200 shadow-lg">
       <div className="h-full px-4 py-4">
         <div className="mt-8">
           <nav className="flex flex-col gap-3">
