@@ -1,6 +1,6 @@
+import { Book } from "@/app/utils/BookTypes";
+import { Category, LanguageString } from "@/app/utils/CategoryTypes";
 import { useEffect, useState } from "react";
-import { Book } from "../Types/BookTypes";
-import { Category, LanguageString } from "../Types/CategoryTypes";
 
 interface BookFormProps {
   book?: Book | null;
