@@ -1,257 +1,186 @@
-import { Book } from "@/app/utils/BookTypes";
-import { Transaction } from "@/app/utils/TransactionTypes";
-import { User } from "@/app/utils/UserTypes";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+
+interface Transaction {
+  id?: string;
+  user: string;
+  book: string;
+  status: string;
+  dueDate: string;
+  borrowDate: string;
+  returnDate?: string | null;
+}
 
 interface TransactionFormProps {
-  transaction?: Transaction | null;
-  onSubmit: (formData: Transaction) => void;
+  transaction: Transaction | null;
+  onSubmit: (formData: Transaction) => Promise<void>;
   onClose: () => void;
 }
 
-export default function TransactionForm({
+const TransactionForm: React.FC<TransactionFormProps> = ({
   transaction,
   onSubmit,
   onClose,
-}: TransactionFormProps) {
-  const [userId, setUserId] = useState<string>(transaction?.user?.id || "");
-  const [bookId, setBookId] = useState<string>(transaction?.book.id || "");
-  const [status, setStatus] = useState<string>(transaction?.status || "borrow");
-  const [dueDate, setDueDate] = useState<string>(transaction?.dueDate || "");
-  const [borrowDate, setBorrowDate] = useState<string>(
-    transaction?.borrowDate || ""
-  );
-  const [returnDate, setReturnDate] = useState<string>(
-    transaction?.returnDate || ""
-  );
-  const [books, setBooks] = useState<Book[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    async function fetchBooks() {
-      try {
-        const response = await fetch("http://localhost:8082/api/books");
-        const result = await response.json();
-        if (result && result.data) {
-          setBooks(result.data);
-        } else {
-          console.error("Books data not found in response");
-        }
-      } catch (error) {
-        console.error("Failed to fetch books", error);
-      }
-    }
-
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("http://localhost:8082/api/users/");
-        const data = await response.json();
-        if (data && Array.isArray(data)) {
-          setUsers(data);
-        } else {
-          console.error("Users data not found in response");
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchBooks();
-    fetchUsers();
-  }, []);
+}) => {
+  const [formData, setFormData] = useState<Transaction>({
+    user: '',
+    book: '',
+    status: '',
+    dueDate: '',
+    borrowDate: '',
+    returnDate: null,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (transaction) {
-      setUserId(transaction.user?.id || "");
-      setBookId(transaction.book?.id || "");
-      setStatus(transaction.status || "borrow");
-      setDueDate(transaction.dueDate || "");
-      setBorrowDate(transaction.borrowDate || "");
-      setReturnDate(transaction.returnDate || "");
+      setFormData(transaction);
     }
   }, [transaction]);
 
-  const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserId(e.target.value);
-  };
-
-  const handleBookIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBookId(e.target.value);
-  };
-
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setStatus(e.target.value);
-  };
-
-  const handleDueDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDueDate(e.target.value);
-  };
-
-  const handleBorrowDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBorrowDate(e.target.value);
-  };
-
-  const handleReturnDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setReturnDate(e.target.value);
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = {
-      user: userId,
-      book: bookId,
-      status: status,
-      dueDate: dueDate,
-      borrowDate: borrowDate,
-      returnDate: returnDate || null,
-    };
-
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
     try {
-      const url = transaction
-        ? `http://localhost:8082/api/transactions/${transaction.id}`
-        : "http://localhost:8082/api/transactions";
-
-      const method = transaction ? "PATCH" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      await onSubmit({
+        ...formData,
+        dueDate: new Date(formData.dueDate).toISOString(),
+        borrowDate: new Date(formData.borrowDate).toISOString(),
+        returnDate: formData.returnDate
+          ? new Date(formData.returnDate).toISOString()
+          : null,
       });
-
-      const result = await response.json();
-      if (response.ok) {
-        onSubmit(result.data);
-      } else {
-        console.error("Failed to submit form:", result.message);
-      }
+      setFormData({
+        user: '',
+        book: '',
+        status: '',
+        dueDate: '',
+        borrowDate: '',
+        returnDate: null,
+      });
+      onClose();
     } catch (error) {
-      console.error("Error submitting form:", error);
+      setError('Failed to submit transaction. Please check the form inputs.');
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+  
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 className="text-xl font-semibold mb-4">
-          {transaction ? "Edit Transaction" : "New Transaction"}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="userId"
-              className="block text-sm font-medium text-gray-700"
-            >
-              User ID:
-            </label>
-            <input
-              id="userId"
-              type="text"
-              value={userId}
-              onChange={handleUserIdChange}
-              placeholder="Enter User ID"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="bookId"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Book ID:
-            </label>
-            <input
-              id="bookId"
-              type="text"
-              value={bookId}
-              onChange={handleBookIdChange}
-              placeholder="Enter Book ID"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="status"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Status:
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={handleStatusChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="borrow">Borrow</option>
-              <option value="return">Return</option>
-              <option value="reserved">Reserved</option>
-            </select>
-          </div>
-          <div>
-            <label
-              htmlFor="dueDate"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Due Date:
-            </label>
-            <input
-              type="date"
-              id="dueDate"
-              value={dueDate}
-              onChange={handleDueDateChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="borrowDate"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Borrow Date:
-            </label>
-            <input
-              type="date"
-              id="borrowDate"
-              value={borrowDate}
-              onChange={handleBorrowDateChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="returnDate"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Return Date:
-            </label>
-            <input
-              type="date"
-              id="returnDate"
-              value={returnDate}
-              onChange={handleReturnDateChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-          <div className="flex justify-end space-x-2">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              Submit
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
-              Close
-            </button>
-          </div>
-        </form>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 rounded-lg shadow-md space-y-4 max-w-md mx-auto"
+    >
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        {transaction ? 'Edit Transaction' : 'Create Transaction'}
+      </h2>
+
+      {error && <p className="text-red-500">{error}</p>}
+
+      <div className="space-y-2">
+        <label className="block text-gray-700 font-medium">Username</label>
+        <input
+          type="text"
+          name="user"
+          value={formData.user}
+          onChange={handleChange}
+          placeholder="Enter username"
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500"
+        />
       </div>
-    </div>
+
+      <div className="space-y-2">
+        <label className="block text-gray-700 font-medium">ISBN</label>
+        <input
+          type="text"
+          name="book"
+          value={formData.book}
+          onChange={handleChange}
+          placeholder="Enter ISBN"
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-gray-700 font-medium">Status</label>
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500"
+        >
+          <option value="">Select status</option>
+          <option value="borrow">Borrow</option>
+          <option value="return">Return</option>
+        </select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-gray-700 font-medium">Due Date</label>
+        <input
+          type="datetime-local"
+          name="dueDate"
+          value={formData.dueDate}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-gray-700 font-medium">Borrow Date</label>
+        <input
+          type="datetime-local"
+          name="borrowDate"
+          value={formData.borrowDate}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500"
+        />
+      </div>
+
+      {/* Conditionally render the Return Date field if the status is "return" */}
+      {formData.status === 'return' && (
+        <div className="space-y-2">
+          <label className="block text-gray-700 font-medium">Return Date</label>
+          <input
+            type="datetime-local"
+            name="returnDate"
+            value={formData.returnDate || ''}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500"
+          />
+        </div>
+      )}
+
+      <div className="flex justify-between mt-4">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit'}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-500 text-white py-2 px-4 rounded-lg shadow hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   );
-}
+};
+
+export default TransactionForm;

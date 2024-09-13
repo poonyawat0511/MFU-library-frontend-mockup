@@ -63,12 +63,18 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const transactionsData = await fetchTransaction();
-      const booksData = await fetchBooks();
-      const usersData = await fetchUsers();
-      setTransactions(transactionsData);
-      setBooks(booksData);
-      setUsers(usersData);
+      try {
+        const [transactionsData, booksData, usersData] = await Promise.all([
+          fetchTransaction(),
+          fetchBooks(),
+          fetchUsers(),
+        ]);
+        setTransactions(transactionsData);
+        setBooks(booksData);
+        setUsers(usersData);
+      } catch (error) {
+        console.error("Failed to load data", error);
+      }
     };
     loadData();
   }, []);
@@ -146,6 +152,8 @@ export default function TransactionsPage() {
             transaction={selectedTransaction}
             onSubmit={handleFormSubmit}
             onClose={handleFormClose}
+            books={books}
+            users={users}
           />
         )}
         <div className="flex flex-wrap gap-6">

@@ -4,6 +4,7 @@ export interface Book {
   id: string;
   name: LanguageString;
   description: LanguageString;
+  isbn:string;
   bookImage: string;
   category: Category;
   status: string;
