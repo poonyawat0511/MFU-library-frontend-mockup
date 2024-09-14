@@ -1,33 +1,32 @@
-import { Category } from "@/app/utils/CategoryTypes";
-import React, { useEffect, useState } from "react";
+import { RoomType } from "@/app/utils/RoomtypeTypes";
+import { useEffect, useState } from "react";
 
-
-interface CategoryFormProps {
-  category?: Category | null;
-  onSubmit: (data: Category) => void;
+interface RoomTypeFormProps {
+  roomTyepe?: RoomType | null;
+  onSubmit: (data: RoomType) => void;
   onClose: () => void;
 }
 
-export default function CategoryForm({
-  category,
+export default function RoomtypeForm({
+  roomTyepe,
   onSubmit,
   onClose,
-}: CategoryFormProps) {
+}: RoomTypeFormProps) {
   const [nameTh, setNameTh] = useState<string>("");
   const [nameEn, setNameEn] = useState<string>("");
 
   useEffect(() => {
-    if (category) {
-      setNameTh(category.name.th);
-      setNameEn(category.name.en);
+    if (roomTyepe) {
+      setNameTh(roomTyepe.name.th);
+      setNameEn(roomTyepe.name.en);
     }
-  }, [category]);
+  }, [roomTyepe]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const data: Category = {
-      id: category?.id || "",
+    const data: RoomType = {
+      id: roomTyepe?.id || "",
       name: {
         th: nameTh,
         en: nameEn,
@@ -36,12 +35,11 @@ export default function CategoryForm({
 
     onSubmit(data);
   };
-
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">
-          {category ? "Edit Category" : "Create Category"}
+          {roomTyepe ? "Edit RoomType" : "Create RoomType"}
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -80,7 +78,7 @@ export default function CategoryForm({
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded"
             >
-              {category ? "Update" : "Create"}
+              {roomTyepe ? "Update" : "Create"}
             </button>
           </div>
         </form>

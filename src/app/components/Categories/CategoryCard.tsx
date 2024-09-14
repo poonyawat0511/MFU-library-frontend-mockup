@@ -1,4 +1,5 @@
-import { Category } from "../Types/CategoryTypes";
+import { Category } from "@/app/utils/CategoryTypes";
+
 
 interface CategoryCardProps {
   category: Category;

@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { BiSolidCategory } from "react-icons/bi";
+import { BiSolidCategory, BiSolidCategoryAlt } from "react-icons/bi";
 import { FaRegUserCircle, FaUserCog } from "react-icons/fa";
-import { GrScorecard } from "react-icons/gr";
 import { HiChartPie } from "react-icons/hi";
 import { IoBook } from "react-icons/io5";
 import { MdAutorenew, MdMeetingRoom } from "react-icons/md";
@@ -87,11 +86,11 @@ export default function SideNavbar() {
               <span className="text-base">Renews management</span>
             </Link>
             <Link
-              href="/recommends"
+              href="/room-types"
               className="flex items-center gap-3 p-3 rounded-md text-gray-400 hover:bg-red-700 hover:text-white transition-colors"
             >
-              <GrScorecard className="text-lg" />
-              <span className="text-base">Recommend List</span>
+              <BiSolidCategoryAlt className="text-lg" />
+              <span className="text-base">Room-Type</span>
             </Link>
             <Link
               href="/recommend-forms"

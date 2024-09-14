@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CategoryCard from "../components/Categories/CategoryCard";
-import CategoryForm from "../components/Categories/CategoryForm";
-import { Category } from "../utils/CategoryTypes";
+import RoomTypeTable from "../components/RoomTypes/RoomTable";
+import RoomtypeForm from "../components/RoomTypes/RoomTypeForm";
+import { RoomType } from "../utils/RoomtypeTypes";
 
+const apiUrl = `http://localhost:8082/api/room-types`;
 
-const apiUrl = "http://localhost:8082/api/book-categories";
-
-async function fetchCategories(): Promise<Category[]> {
+async function fetchRoomType(): Promise<RoomType[]> {
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {
-      throw new Error("Failed to fetch categories");
+      throw new Error("Failed to fetch room-types");
     }
     const result = await response.json();
     return result.data;
@@ -22,40 +21,40 @@ async function fetchCategories(): Promise<Category[]> {
   }
 }
 
-export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
+export default function RoomTypePage() {
+  const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingRoomType, setEditingRoomType] = useState<RoomType | null>(null);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchCategories().then((data) => {
-      setCategories(data);
+    fetchRoomType().then((data) => {
+      setRoomTypes(data);
       setLoading(false);
     });
   }, []);
 
   const handleCreate = () => {
-    setEditingCategory(null);
+    setEditingRoomType(null);
     setIsFormOpen(true);
   };
 
-  const handleEdit = (category: Category) => {
-    setEditingCategory(category);
+  const handleEdit = (roomType: RoomType) => {
+    setEditingRoomType(roomType);
     setIsFormOpen(true);
   };
 
-  const handleDelete = async (categoryId: string) => {
+  const handleDelete = async (roomTypeId: string) => {
     if (confirm("Are you sure you want to delete this Category?")) {
       try {
-        const response = await fetch(`${apiUrl}/${categoryId}`, {
+        const response = await fetch(`${apiUrl}/${roomTypeId}`, {
           method: "DELETE",
         });
         if (!response.ok) {
           throw new Error("Failed to delete category");
         }
-        setCategories(
-          categories.filter((category) => category.id !== categoryId)
+        setRoomTypes(
+          roomTypes.filter((roomType) => roomType.id !== roomTypeId)
         );
       } catch (error) {
         console.error("Failed to delete category:", error);
@@ -63,7 +62,7 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleFormSubmit = async (data: Category) => {
+  const handleFormSubmit = async (data: RoomType) => {
     try {
       const isUpdate = !!data.id;
       const method = isUpdate ? "PATCH" : "POST";
@@ -80,19 +79,19 @@ export default function CategoriesPage() {
       if (response.ok) {
         const result = await response.json();
         if (isUpdate) {
-          setCategories(
-            categories.map((c) => (c.id === result.data.id ? result.data : c))
+          setRoomTypes(
+            roomTypes.map((c) => (c.id === result.data.id ? result.data : c))
           );
         } else {
-          setCategories([...categories, result.data]);
+          setRoomTypes([...roomTypes, result.data]);
         }
         setIsFormOpen(false);
       } else {
         const errorText = await response.text();
-        console.error(`Failed to submit category: ${errorText}`);
+        console.error(`Failed to submit room-type: ${errorText}`);
       }
     } catch (error) {
-      console.error("Failed to submit category:", error);
+      console.error("Failed to submit room-type:", error);
     }
   };
 
@@ -106,21 +105,21 @@ export default function CategoriesPage() {
         onClick={handleCreate}
         className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
       >
-        Create New Book
+        Create New Room-Type
       </button>
       <div className="flex flex-wrap justify-start">
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.id}
-            category={category}
+        {roomTypes.map((roomType) => (
+          <RoomTypeTable
+            key={roomType.id}
+            roomType={roomType}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
         ))}
       </div>
       {isFormOpen && (
-        <CategoryForm
-          category={editingCategory}
+        <RoomtypeForm
+          roomTyepe={editingRoomType}
           onSubmit={handleFormSubmit}
           onClose={() => setIsFormOpen(false)}
         />
