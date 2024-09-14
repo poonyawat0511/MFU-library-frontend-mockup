@@ -1,6 +1,7 @@
+import { Room } from "@/app/utils/RoomTypes";
+import { RoomType } from "@/app/utils/RoomtypeTypes";
 import React, { useEffect, useState } from "react";
-import { Room } from "../Types/RoomTypes";
-import { RoomType } from "../Types/RoomtypeTypes";
+
 
 interface RoomFormProps {
   room?: Room | null;
@@ -11,7 +12,7 @@ interface RoomFormProps {
 export default function RoomForm({ room, onSubmit, onClose }: RoomFormProps) {
   const [roomNumber, setRoomNumber] = useState<number>(0);
   const [floor, setFloor] = useState<number>(0);
-  const [status, setStatus] = useState<string>("free");
+  const [status, setStatus] = useState<string>("ready");
   const [type, setType] = useState<string>(""); // Changed to string to store MongoDB ID
   const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
 
@@ -93,9 +94,8 @@ export default function RoomForm({ room, onSubmit, onClose }: RoomFormProps) {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             >
-              <option value="free">Free</option>
-              <option value="reserved">Reserved</option>
-              <option value="in use">In Use</option>
+              <option value="ready">Ready</option>
+              <option value="not ready">Not Ready</option>
             </select>
           </div>
           <div className="mb-4">
