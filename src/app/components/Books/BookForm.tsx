@@ -17,6 +17,7 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
     en: book?.description?.en || "",
     th: book?.description?.th || "",
   });
+  const [ISBN, setISBN] = useState<string>(book?.ISBN || "");
   const [bookImage, setBookImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     book?.bookImage || null
@@ -53,6 +54,7 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
         en: book.description?.en || "",
         th: book.description?.th || "",
       });
+      setISBN(book.ISBN || "");
       setImagePreview(book.bookImage || null);
       setCategory(book.category?.id || "");
       setStatus(book.status || "ready");
@@ -83,6 +85,11 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
     formData.append("name[en]", name.en);
     formData.append("description[th]", description.th);
     formData.append("description[en]", description.en);
+    if (ISBN) {
+      formData.append("ISBN", ISBN);
+    } else {
+      alert("No ISBN");
+    }
 
     if (category) {
       formData.append("category", category);
@@ -163,6 +170,13 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
           onChange={(e) =>
             setDescription({ ...description, th: e.target.value })
           }
+          className="border p-2 mb-2 w-full"
+        />
+        <input
+          type="text"
+          placeholder="ISBN"
+          value={ISBN}
+          onChange={(e) => setISBN(e.target.value)}
           className="border p-2 mb-2 w-full"
         />
         <select

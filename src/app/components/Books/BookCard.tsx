@@ -35,6 +35,9 @@ export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
         <span className="inline-block bg-blue-200 rounded-full px-2 py-1 text-xs font-semibold text-blue-700">
           Quantity: {book.quantity}
         </span>
+        <span className="inline-block bg-blue-200 rounded-full px-2 py-1 text-xs font-semibold text-blue-700">
+          ISBN: {book.ISBN}
+        </span>
       </div>
       <div className="flex justify-between px-4 py-2">
         <button
