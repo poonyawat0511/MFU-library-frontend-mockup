@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-
 import Header from "./components/Default/Header";
 import SideNavbar from "./components/Default/SideNavbar";
 import "./globals.css";
@@ -20,8 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} id="root">
-        <Header/>
         <SideNavbar />
+        <Header />
         <main className="ml-[250px] mt-20">{children}</main>
       </body>
     </html>

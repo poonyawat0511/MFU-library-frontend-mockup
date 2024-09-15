@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import BookCard from "../components/Books/BookCard";
 import BookForm from "../components/Books/BookForm";
-import { Book } from "../components/Books/BookTypes";
+import { Book } from "../utils/BookTypes";
 
 const apiUrl = "http://localhost:8082/api/books";
 

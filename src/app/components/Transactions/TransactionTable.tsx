@@ -1,77 +1,63 @@
-import { Transaction } from "./TransactionTypes";
+import { Transaction } from "@/app/utils/TransactionTypes";
 
-interface TransactionProps {
-  transactions: Transaction[]; // Add this prop to receive a list of transactions
+interface TransactionTableProps {
+  transaction: Transaction;
   onEdit: (transaction: Transaction) => void;
   onDelete: (transactionId: string) => void;
 }
 
 export default function TransactionTable({
-  transactions,
+  transaction,
   onEdit,
   onDelete,
-}: TransactionProps) {
+}: TransactionTableProps) {
+  const bookName = transaction.book?.name?.en || transaction.book?.name?.th;
+
   return (
-    <div className="column">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+        <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
           <tr>
-            <th className="py-2 px-4 border-b">Transaction ID</th>
-            <th className="py-2 px-4 border-b">User</th>
-            <th className="py-2 px-4 border-b">Book</th>
-            <th className="py-2 px-4 border-b">Status</th>
-            <th className="py-2 px-4 border-b">Due Date</th>
-            <th className="py-2 px-4 border-b">Borrow Date</th>
-            <th className="py-2 px-4 border-b">Return Date</th>
-            <th className="py-2 px-4 border-b">Action</th>
+            <th className="px-6 py-3 text-left">User</th>
+            <th className="px-6 py-3 text-left">Book</th>
+            <th className="px-6 py-3 text-left">Status</th>
+            <th className="px-6 py-3 text-left">Due Date</th>
+            <th className="px-6 py-3 text-left">Borrow Date</th>
+            <th className="px-6 py-3 text-left">Return Date</th>
+            <th className="px-6 py-3 text-left">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {transactions.map((transaction) => (
-            <tr key={transaction.id}>
-              <td className="py-2 px-4 border-b text-center">
-                {transaction.id}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {transaction.user?.username || "Unknown User"}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {transaction.book?.name.en || "N/A"}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {transaction.status}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {new Date(transaction.dueDate).toLocaleDateString()}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {new Date(transaction.borrowDate).toLocaleDateString()}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                {transaction.returnDate
-                  ? new Date(transaction.returnDate).toLocaleDateString()
-                  : "Not Returned"}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                <div>
-                  <button
-                    className="bg-yellow-500 text-white py-1 px-2 rounded mb-2"
-                    onClick={() => onEdit(transaction)}
-                  >
-                    Edit
-                  </button>
-                </div>
-                <div>
-                  <button
-                    className="bg-red-500 text-white py-1 px-2 rounded"
-                    onClick={() => onDelete(transaction.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+        <tbody className="text-gray-700">
+          <tr className="border-b hover:bg-gray-50">
+            <td className="px-6 py-4">{transaction.user.username}</td>
+            <td className="px-6 py-4">{bookName}</td>
+            <td className="px-6 py-4 capitalize">{transaction.status}</td>
+            <td className="px-6 py-4">
+              {new Date(transaction.dueDate).toLocaleDateString()}
+            </td>
+            <td className="px-6 py-4">
+              {new Date(transaction.borrowDate).toLocaleDateString()}
+            </td>
+            <td className="px-6 py-4">
+              {transaction.returnDate
+                ? new Date(transaction.returnDate).toLocaleDateString()
+                : "N/A"}
+            </td>
+            <td className="px-6 py-4 flex space-x-2">
+              <button
+                onClick={() => onEdit(transaction)}
+                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => onDelete(transaction.id)}
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

@@ -1,20 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 export default function ProfilePage() {
-  const router = useRouter();
-
   const handleLogout = async () => {
     try {
-      // Call the logout endpoint on the server
       await fetch("http://localhost:8082/api/auth/logout", {
         method: "POST",
-        credentials: "include", // Ensure cookies are included in the request
+        credentials: "include",
       });
 
-      // Redirect to the login page
-      router.push("/login");
+      // Force a full page reload to the login page
+      window.location.href = "/login";
     } catch (error) {
       console.error("Logout failed:", error);
     }
