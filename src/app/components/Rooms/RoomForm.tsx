@@ -2,7 +2,6 @@ import { Room } from "@/app/utils/RoomTypes";
 import { RoomType } from "@/app/utils/RoomtypeTypes";
 import React, { useEffect, useState } from "react";
 
-
 interface RoomFormProps {
   room?: Room | null;
   onSubmit: (data: Room) => void;

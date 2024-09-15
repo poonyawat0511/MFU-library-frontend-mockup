@@ -1,20 +1,9 @@
-import { Book } from "@/app/utils/BookTypes";
-import { User } from "@/app/utils/UserTypes";
+import { Transaction } from "@/app/utils/TransactionTypes";
 
 interface TransactionTableProps {
   transaction: Transaction;
   onEdit: (transaction: Transaction) => void;
   onDelete: (transactionId: string) => void;
-}
-
-interface Transaction {
-  id: string;
-  user: User;
-  book: Book;
-  status: "borrow" | "return";
-  dueDate: string;
-  borrowDate: string;
-  returnDate?: string;
 }
 
 export default function TransactionTable({
