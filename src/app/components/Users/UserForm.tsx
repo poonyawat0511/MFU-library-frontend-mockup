@@ -14,7 +14,7 @@ export default function UserForm({ user, onSubmit, onClose }: UserFormProps) {
 
   useEffect(() => {
     if (user) {
-      setEmail(user.username);
+      setEmail(user.email);
       setUsername(user.username);
       setPassword(user.password);
     }

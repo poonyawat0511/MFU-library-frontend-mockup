@@ -40,7 +40,7 @@ export default function RenewForm({
     const data: Omit<Renew, "status"> | Renew = isCreating
       ? {
           id: renew?.id || "",
-          transaction: transactionId, // Send only the transaction ID when creating
+          transaction: transactionId || null, // Send only the transaction ID when creating
         }
       : {
           id: renew?.id || "",
