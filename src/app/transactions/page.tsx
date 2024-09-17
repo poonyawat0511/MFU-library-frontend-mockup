@@ -62,21 +62,16 @@ export default function TransactionsPage() {
   const [showForm, setShowForm] = useState<boolean>(false);
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [transactionsData, booksData, usersData] = await Promise.all([
-          fetchTransaction(),
-          fetchBooks(),
-          fetchUsers(),
-        ]);
-        setTransactions(transactionsData);
-        setBooks(booksData);
-        setUsers(usersData);
-      } catch (error) {
-        console.error("Failed to load data", error);
-      }
+    const fetchData = async () => {
+      const fetchedTransactions = await fetchTransaction();
+      const fetchedBooks = await fetchBooks();
+      const fetchedUsers = await fetchUsers();
+      setTransactions(fetchedTransactions);
+      setBooks(fetchedBooks);
+      setUsers(fetchedUsers);
     };
-    loadData();
+
+    fetchData();
   }, []);
 
   const handleEdit = (transaction: Transaction) => {

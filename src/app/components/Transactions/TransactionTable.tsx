@@ -51,7 +51,7 @@ export default function TransactionTable({
                 Edit
               </button>
               <button
-                onClick={() => onDelete(transaction.id)}
+                onClick={() => transaction.id && onDelete(transaction.id)}
                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 Delete
