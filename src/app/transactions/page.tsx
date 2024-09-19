@@ -143,13 +143,17 @@ export default function TransactionsPage() {
           Create New Transaction
         </button>
         {showForm && (
-          <TransactionForm
-            transaction={selectedTransaction}
-            onSubmit={handleFormSubmit}
-            onClose={handleFormClose}
-            books={books}
-            users={users}
-          />
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+              <TransactionForm
+                transaction={selectedTransaction}
+                onSubmit={handleFormSubmit}
+                onClose={handleFormClose}
+                books={books}
+                users={users}
+              />
+            </div>
+          </div>
         )}
         <div className="flex flex-wrap gap-6">
           {transactions.length > 0 ? (
