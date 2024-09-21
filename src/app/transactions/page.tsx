@@ -155,22 +155,17 @@ export default function TransactionsPage() {
             </div>
           </div>
         )}
-        <div className="flex flex-wrap gap-6">
-          {transactions.length > 0 ? (
-            transactions.map((transaction) => (
-              <TransactionTable
-                key={transaction.id}
-                transaction={transaction}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))
-          ) : (
-            <div className="text-center text-gray-500">
-              No transactions available.
-            </div>
-          )}
-        </div>
+        {transactions.length > 0 ? (
+          <TransactionTable
+            transactions={transactions}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        ) : (
+          <div className="text-center text-gray-500">
+            No transactions available.
+          </div>
+        )}
       </div>
     </div>
   );
