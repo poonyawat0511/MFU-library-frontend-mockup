@@ -60,6 +60,7 @@ export default function TransactionsPage() {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>("borrow");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,10 +133,39 @@ export default function TransactionsPage() {
     setSelectedTransaction(null);
   };
 
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+  };
+
+  // กรอง transactions ตาม status (borrow หรือ return)
+  const filteredTransactions = transactions.filter((transaction) =>
+    activeTab === "borrow" ? transaction.status === "borrow" : transaction.status === "return"
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Transactions</h1>
+        <div className="h-16">
+          <nav className="bg-blue-500 w-full h-12 flex flex-row gap-9 justify-center">
+            <button
+              onClick={() => handleTabClick("borrow")}
+              className={`item-center flex hover:bg-blue-700 text-white transition-colors px-4 py-2 ${
+                activeTab === "borrow" ? "bg-black text-white" : ""
+              }`}
+            >
+              Borrow
+            </button>
+            <button
+              onClick={() => handleTabClick("return")}
+              className={`item-center flex hover:bg-blue-700 text-white transition-colors px-4 py-2 ${
+                activeTab === "return" ? "bg-black text-white" : ""
+              }`}
+            >
+              Return
+            </button>
+          </nav>
+        </div>
         <button
           onClick={() => setShowForm(true)}
           className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
@@ -155,9 +185,9 @@ export default function TransactionsPage() {
             </div>
           </div>
         )}
-        {transactions.length > 0 ? (
+        {filteredTransactions.length > 0 ? (
           <TransactionTable
-            transactions={transactions}
+            transactions={filteredTransactions}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
