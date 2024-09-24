@@ -1,5 +1,6 @@
+import { Book } from "@/utils/BookTypes";
+import { Category, LanguageString } from "@/utils/CategoryTypes";
 import { useEffect, useState } from "react";
-import { Book, Category, LanguageString } from "./BookTypes";
 
 interface BookFormProps {
   book?: Book | null;
@@ -16,6 +17,7 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
     en: book?.description?.en || "",
     th: book?.description?.th || "",
   });
+  const [ISBN, setISBN] = useState<string>(book?.ISBN || "");
   const [bookImage, setBookImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     book?.bookImage || null
@@ -52,6 +54,7 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
         en: book.description?.en || "",
         th: book.description?.th || "",
       });
+      setISBN(book.ISBN || "");
       setImagePreview(book.bookImage || null);
       setCategory(book.category?.id || "");
       setStatus(book.status || "ready");
@@ -82,15 +85,16 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
     formData.append("name[en]", name.en);
     formData.append("description[th]", description.th);
     formData.append("description[en]", description.en);
+    if (ISBN) {
+      formData.append("ISBN", ISBN);
+    } else {
+      alert("No ISBN");
+    }
 
-    console.log("Selected category ID:", category);
-    console.log("Available categories:", categories);
-
-    const selectedCategory = categories.find((cat) => cat.id === category);
-    if (selectedCategory) {
+    if (category) {
       formData.append("category", category);
     } else {
-      alert("Invalid category selected");
+      alert("Please select a category");
       return;
     }
 
@@ -105,7 +109,14 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
 
     if (bookImage) {
       formData.append("bookImage", bookImage);
+    } else if (book?.bookImage) {
+      formData.append("bookImage", book.bookImage);
     }
+
+    console.log(
+      "Submitting form data:",
+      Object.fromEntries(formData.entries())
+    );
 
     onSubmit(formData);
   };
@@ -161,6 +172,13 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
           }
           className="border p-2 mb-2 w-full"
         />
+        <input
+          type="text"
+          placeholder="ISBN"
+          value={ISBN}
+          onChange={(e) => setISBN(e.target.value)}
+          className="border p-2 mb-2 w-full"
+        />
         <select
           value={category}
           onChange={handleCategoryChange}
@@ -185,23 +203,24 @@ export default function BookForm({ book, onSubmit, onClose }: BookFormProps) {
 
         <input
           type="number"
-          placeholder="Quantity"
+          min="1"
           value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-          className="border p-2 mb-2 w-full"
+          onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+          className="border p-2 mb-4 w-full"
         />
-        <div className="flex justify-end">
-          <button
-            onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Cancel
-          </button>
+
+        <div className="flex justify-between">
           <button
             onClick={handleSubmit}
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Save
+            Submit
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Cancel
           </button>
         </div>
       </div>

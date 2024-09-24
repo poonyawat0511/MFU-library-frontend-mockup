@@ -1,4 +1,5 @@
-import { Book } from "./BookTypes";
+import { Book } from "@/utils/BookTypes";
+
 
 interface BookCardProps {
   book: Book;
@@ -8,7 +9,7 @@ interface BookCardProps {
 
 export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
   return (
-    <div className="max-w-xs w-full h-85 rounded overflow-hidden shadow-lg m-2">
+    <div className="max-w-sm w-full h-85 rounded overflow-hidden shadow-lg m-2">
       <img
         className="w-full h-40 object-cover"
         src={book.bookImage}
@@ -33,6 +34,9 @@ export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
         </span>
         <span className="inline-block bg-blue-200 rounded-full px-2 py-1 text-xs font-semibold text-blue-700">
           Quantity: {book.quantity}
+        </span>
+        <span className="inline-block bg-blue-200 rounded-full px-2 py-1 text-xs font-semibold text-blue-700">
+          ISBN: {book.ISBN}
         </span>
       </div>
       <div className="flex justify-between px-4 py-2">
