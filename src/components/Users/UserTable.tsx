@@ -1,4 +1,4 @@
-import { User } from "@/app/utils/UserTypes";
+import { User } from "@/utils/UserTypes";
 
 interface UserTableProps {
   user: User;

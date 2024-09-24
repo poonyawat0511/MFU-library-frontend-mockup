@@ -1,4 +1,4 @@
-import { Renew } from "@/app/utils/RenewType";
+import { Renew } from "@/utils/RenewType";
 import { useEffect, useState } from "react";
 
 interface RenewFormProps {

@@ -1,5 +1,5 @@
-import { Room } from "@/app/utils/RoomTypes";
-import { RoomType } from "@/app/utils/RoomtypeTypes";
+import { Room } from "@/utils/RoomTypes";
+import { RoomType } from "@/utils/RoomtypeTypes";
 import React, { useEffect, useState } from "react";
 
 interface RoomFormProps {

@@ -1,5 +1,5 @@
-import { Book } from "@/app/utils/BookTypes";
-import { Category, LanguageString } from "@/app/utils/CategoryTypes";
+import { Book } from "@/utils/BookTypes";
+import { Category, LanguageString } from "@/utils/CategoryTypes";
 import { useEffect, useState } from "react";
 
 interface BookFormProps {

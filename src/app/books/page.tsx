@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import BookCard from "../components/Books/BookCard";
-import BookForm from "../components/Books/BookForm";
-import { Book } from "../utils/BookTypes";
+import { Book } from "../../utils/BookTypes";
+import BookCard from "../../components/Books/BookCard";
+import BookForm from "../../components/Books/BookForm";
 
 const apiUrl = "http://localhost:8082/api/books";
 

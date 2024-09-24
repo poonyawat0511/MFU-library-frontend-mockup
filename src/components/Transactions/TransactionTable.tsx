@@ -1,4 +1,4 @@
-import { Transaction } from "@/app/utils/TransactionTypes";
+import { Transaction } from "@/utils/TransactionTypes";
 
 interface TransactionTableProps {
   transactions: Transaction[];

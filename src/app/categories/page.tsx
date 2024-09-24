@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CategoryCard from "../components/Categories/CategoryCard";
-import CategoryForm from "../components/Categories/CategoryForm";
-import { Category } from "../utils/CategoryTypes";
+import { Category } from "../../utils/CategoryTypes";
+import CategoryCard from "../../components/Categories/CategoryCard";
+import CategoryForm from "../../components/Categories/CategoryForm";
 
 
 const apiUrl = "http://localhost:8082/api/book-categories";

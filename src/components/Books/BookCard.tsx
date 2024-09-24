@@ -1,4 +1,4 @@
-import { Book } from "@/app/utils/BookTypes";
+import { Book } from "@/utils/BookTypes";
 
 
 interface BookCardProps {

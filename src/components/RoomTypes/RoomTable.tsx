@@ -1,4 +1,4 @@
-import { RoomType } from "@/app/utils/RoomtypeTypes";
+import { RoomType } from "@/utils/RoomtypeTypes";
 interface RoomTypeProps {
   roomType: RoomType;
   onEdit: (roomType: RoomType) => void;

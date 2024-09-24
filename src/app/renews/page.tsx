@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RenewForm from "../components/Renews/RenewForm";
-import RenewTable from "../components/Renews/RenewTable";
-import { Renew } from "../utils/RenewType";
+import { Renew } from "../../utils/RenewType";
+import RenewForm from "../../components/Renews/RenewForm";
+import RenewTable from "../../components/Renews/RenewTable";
 
 const apiUrl = `http://localhost:8082/api/renews`;
 const transactoinApiUrl = "http://localhost:8082/api/transactions";

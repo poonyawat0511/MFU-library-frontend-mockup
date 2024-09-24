@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import RoomForm from "../components/Rooms/RoomForm";
+import RoomForm from "../../components/Rooms/RoomForm";
 import { Room } from "../components/Types/RoomTypes";
 
 export default function RoomPage() {

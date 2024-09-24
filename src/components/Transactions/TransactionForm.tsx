@@ -1,7 +1,7 @@
 "server client";
-import { Book } from "@/app/utils/BookTypes";
-import { Transaction } from "@/app/utils/TransactionTypes";
-import { User } from "@/app/utils/UserTypes";
+import { Book } from "@/utils/BookTypes";
+import { Transaction } from "@/utils/TransactionTypes";
+import { User } from "@/utils/UserTypes";
 import React, { useEffect, useState } from "react";
 
 interface TransactionFormProps {

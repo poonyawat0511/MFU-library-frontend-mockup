@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import TransactionForm from "../components/Transactions/TransactionForm";
-import TransactionTable from "../components/Transactions/TransactionTable";
-import { Book } from "../utils/BookTypes";
-import { Transaction } from "../utils/TransactionTypes";
-import { User } from "../utils/UserTypes";
+import { Book } from "../../utils/BookTypes";
+import { Transaction } from "../../utils/TransactionTypes";
+import { User } from "../../utils/UserTypes";
+import TransactionForm from "../../components/Transactions/TransactionForm";
+import TransactionTable from "../../components/Transactions/TransactionTable";
 
 const apiUrl = `http://localhost:8082/api/transactions`;
 const apiBookUrl = `http://localhost:8082/api/books`;

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RoomTypeTable from "../components/RoomTypes/RoomTable";
-import RoomtypeForm from "../components/RoomTypes/RoomTypeForm";
-import { RoomType } from "../utils/RoomtypeTypes";
+import { RoomType } from "../../utils/RoomtypeTypes";
+import RoomTypeTable from "../../components/RoomTypes/RoomTable";
+import RoomtypeForm from "../../components/RoomTypes/RoomTypeForm";
 
 const apiUrl = `http://localhost:8082/api/room-types`;
 

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import UserForm from "../components/Users/UserForm";
-import UserTable from "../components/Users/UserTable";
-import { User } from "../utils/UserTypes";
+import { User } from "../../utils/UserTypes";
+import UserForm from "../../components/Users/UserForm";
+import UserTable from "../../components/Users/UserTable";
 
 const apiUrl = "http://localhost:8082/api/users";
 
